@@ -5,3 +5,6 @@ Binaries/
 Build/
 DerivedDataCache/
 *.VC.db
+*.db-shm
+*.db-wal
+*.ipch
