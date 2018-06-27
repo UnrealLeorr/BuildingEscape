@@ -17,11 +17,15 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+	// ...
+	Opener = GetWorld()->GetFirstPlayerController()->GetPawn(); // at the begining of play Opener becomes the first controlable pawn
+}
+
+void UOpenDoor::OpenDoor()
+{
 	AActor *Owner = GetOwner();
 	FRotator NewRotation = FRotator(0, -180, 0);
 	Owner->SetActorRotation(NewRotation);
-	// ...
-	
 }
 
 
@@ -29,7 +33,9 @@ void UOpenDoor::BeginPlay()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	if (PressurePlate->IsOverlappingActor(Opener)) {
+		OpenDoor();
+	}
 	// ...
 }
 
