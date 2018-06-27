@@ -8,3 +8,4 @@ DerivedDataCache/
 *.db-shm
 *.db-wal
 *.ipch
+.vs/BuildingEscape/v15/Browse.VC.opendb

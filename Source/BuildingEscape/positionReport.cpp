@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "positionReport.h"
+#include "BuildingEscape.h"
 #include "GameFramework/Actor.h"
 
 
@@ -17,8 +18,7 @@ UpositionReport::UpositionReport()
 void UpositionReport::BeginPlay()
 {
 	Super::BeginPlay();//begins the Inherited constructor
-	FString actorName = GetOwner()->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("UE_LOG from %s"), *actorName);
+	
 	// ...
 	
 }
@@ -28,7 +28,9 @@ void UpositionReport::BeginPlay()
 void UpositionReport::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);//begins the Inherited constructor
-	
+	FString actorName = (*GetOwner()).GetName();
+	FString actorPos = GetOwner()->GetActorLocation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("UE_LOG:%s at %s"), *actorName, *actorPos);
 	// ...
 }
 
