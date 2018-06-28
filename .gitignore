@@ -10,7 +10,7 @@ DerivedDataCache/
 *.ipch
 .vs/BuildingEscape/v15/Browse.VC.opendb
 # Visual Studio 2015 user specific files
-
+*.sln
 .vs/
 
 
