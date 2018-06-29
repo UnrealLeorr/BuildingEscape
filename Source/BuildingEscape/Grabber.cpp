@@ -53,5 +53,23 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		0.f,
 		5.f
 	);
+	//line trace (aka raycast)
+
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());// set up to ignore the owner of the grabber, so the line trace dont keep tracing the owner
+
+	FHitResult Hit;
+
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT Hit,
+		PlayerViewPointLocation,
+		LineTraceEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParameters
+	);
+	if (Hit.GetActor()) {//if the pointer is not null
+		UE_LOG(LogTemp, Log, TEXT("HIT! %s"),
+			*(Hit.GetActor()->GetName())
+		);
+	}
 }
 
