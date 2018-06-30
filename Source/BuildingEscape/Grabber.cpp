@@ -12,22 +12,27 @@ UGrabber::UGrabber()
 	PrimaryComponentTick.bCanEverTick = true;
 	reach = 100.f;
 
-	// ...
 }
-
-void UGrabber::Grab() {
-	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
-}
-void UGrabber::Release() {
-	UE_LOG(LogTemp, Warning, TEXT("Released Input!"));
-}
-
 // Called when the game starts
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-
 	//setting up the PhysicsHandle at the beggining of the game
+	FindPhysicsHandleComponent();
+	//setting up the InputComponent at the beggining of the game
+	SetupInputComponent();
+}
+// Called every frame
+void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	// if we push the grab key, LINE TRACE and see if it reaches a physics body, if it does move it
+	// else do nothing.
+	
+}
+//custom made methods
+void UGrabber::FindPhysicsHandleComponent()
+{
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle) {//if PhysicsHandle is not nullptr anymore
 
@@ -37,10 +42,12 @@ void UGrabber::BeginPlay()
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Physics Handler not Found from:%s"),
-			*(GetOwner()->GetName()) 
+			*(GetOwner()->GetName())
 		);
 	}
-	//setting up the InputComponent at the beggining of the game
+}
+void UGrabber::SetupInputComponent()
+{
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent) {//if InputComponent is not nullptr anymore
 
@@ -55,16 +62,19 @@ void UGrabber::BeginPlay()
 			*(GetOwner()->GetName())
 		);
 	}
-	
 }
+void UGrabber::Grab() {
 
-
-
-// Called every frame
-void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
+	GetFirstPhysicsBodyInReach();//if we press the grab key the whole method starts
+	//atach physics handle	
+}
+void UGrabber::Release() {
+	UE_LOG(LogTemp, Warning, TEXT("Released Input!"));
+	//release physics handle
+}
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	// ...
 	FVector PlayerViewPointLocation;//this is a reference to the Player Location
 	FRotator PlayerViewPointRotation;//this is a reference to the Player Rotation
 
@@ -72,18 +82,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		OUT PlayerViewPointLocation,// the get method takes the adress of a Fvector and put the value of of player location in it(a FVector from (0,0,0))
 		OUT PlayerViewPointRotation// same thing to the rotation
 	);//really weird Get lol
-	
+
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*reach;
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FColor(255, 0, 0),
-		false,
-		0.f,
-		0.f,
-		5.f
-	);
+
 	//line trace (aka raycast)
 
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());// set up to ignore the owner of the grabber, so the line trace dont keep tracing the owner
@@ -91,7 +92,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FHitResult Hit;
 
 	GetWorld()->LineTraceSingleByObjectType(
-		OUT Hit,//out mean it gets the thing and puts in Hit
+		OUT Hit,//out mean it gets the thing and puts in Hit, essentially this the crucial part where we update the HIT variable with a valid data.
 		PlayerViewPointLocation,
 		LineTraceEnd,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
@@ -102,5 +103,5 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 			*(Hit.GetActor()->GetName())
 		);
 	}
+	return Hit;
 }
-
