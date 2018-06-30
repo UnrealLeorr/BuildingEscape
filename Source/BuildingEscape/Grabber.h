@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
-#include "Runtime/Engine/Public/DrawDebugHelpers.h"
+#include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Runtime/Engine/Classes/Components/InputComponent.h"
 #include "Grabber.generated.h"

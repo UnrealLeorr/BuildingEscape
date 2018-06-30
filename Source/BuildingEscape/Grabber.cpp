@@ -26,7 +26,19 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	FVector PlayerViewPointLocation;//this is a reference to the Player Location
+	FRotator PlayerViewPointRotation;//this is a reference to the Player Rotation
+
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation,// the get method takes the adress of a Fvector and put the value of of player location in it(a FVector from (0,0,0))
+		OUT PlayerViewPointRotation// same thing to the rotation
+	);//really weird Get lol
+
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*reach;
 	// if we push the grab key, LINE TRACE and see if it reaches a physics body, if it does move it
+	if (PhysicsHandle->GrabbedComponent) {
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
 	// else do nothing.
 	
 }
@@ -66,11 +78,22 @@ void UGrabber::SetupInputComponent()
 void UGrabber::Grab() {
 
 	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
-	GetFirstPhysicsBodyInReach();//if we press the grab key the whole method starts
-	//atach physics handle	
+	auto HitResult = GetFirstPhysicsBodyInReach();//if we press the grab key the whole method starts
+	auto ComponentToGrab = HitResult.GetComponent();
+	auto ActorHit = HitResult.GetActor();
+	//atach physics handle
+	if (ActorHit) {
+		PhysicsHandle->GrabComponent(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true
+		);
+	}
 }
 void UGrabber::Release() {
 	UE_LOG(LogTemp, Warning, TEXT("Released Input!"));
+	PhysicsHandle->ReleaseComponent();
 	//release physics handle
 }
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
