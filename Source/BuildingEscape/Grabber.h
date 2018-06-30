@@ -32,9 +32,11 @@ protected:
 private:
 
 	UPhysicsHandleComponent *PhysicsHandle = nullptr;
-
+	//as the LinetraceEnd is a unity vector, reach is the scalar to set the size of the player reach
 	float reach;
-	//findOwnerPhysicsHandle
+	FVector GetReachLineStart();
+	FVector GetReachLineEnd();
+	//findOwnerPhysicsHandle from the player in this case.
 	void FindPhysicsHandleComponent();
 	//input events
 	UInputComponent *InputComponent = nullptr;
@@ -42,7 +44,7 @@ private:
 	void Grab();
 	void Release();
 	//hot loops
-	//return hit for first physics body in reach
-	FHitResult GetFirstPhysicsBodyInReach() const;
 
+	//return hit for first physics body in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
 };
