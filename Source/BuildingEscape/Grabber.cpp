@@ -20,27 +20,52 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	//setting up the PhysicsHandle at the beggining of the game
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle) {//if PhysicsHandle is not nullptr anymore
+
+		UE_LOG(LogTemp, Warning, TEXT("Physics Handler Found from:%s"),
+			*(PhysicsHandle->GetOwner()->GetName())
+		);
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Physics Handler not Found from:%s"),
+			*(GetOwner()->GetName()) 
+		);
+	}
+	//setting up the InputComponent at the beggining of the game
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent) {//if InputComponent is not nullptr anymore
+
+		UE_LOG(LogTemp, Warning, TEXT("Input Component Found from:%s"),
+			*(InputComponent->GetOwner()->GetName())
+		);
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Physics Component not Found from:%s"),
+			*(GetOwner()->GetName())
+		);
+	}
 	
 }
 
+void UGrabber::Grab() {
+	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
+}
 
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// ...
-	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotation;
+	FVector PlayerViewPointLocation;//this is a reference to the Player Location
+	FRotator PlayerViewPointRotation;//this is a reference to the Player Rotation
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation,// the get method actually associate PlayerViewPointLocation with the actual location
-		OUT PlayerViewPointRotation//same thing to the rotation
+		OUT PlayerViewPointLocation,// the get method takes the adress of a Fvector and put the value of of player location in it(a FVector from (0,0,0))
+		OUT PlayerViewPointRotation// same thing to the rotation
 	);//really weird Get lol
-	UE_LOG(LogTemp, Warning, TEXT("UE_LOG:Player\nLocation %s\nRotation %s"),
-		*PlayerViewPointLocation.ToString(),
-		*PlayerViewPointRotation.ToString()
-	);//Log out to test the get method
 	
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*reach;
 	DrawDebugLine(
@@ -60,7 +85,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FHitResult Hit;
 
 	GetWorld()->LineTraceSingleByObjectType(
-		OUT Hit,
+		OUT Hit,//out mean it gets the thing and puts in Hit
 		PlayerViewPointLocation,
 		LineTraceEnd,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),

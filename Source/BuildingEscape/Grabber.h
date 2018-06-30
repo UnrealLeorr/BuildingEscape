@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Runtime/Engine/Classes/Components/InputComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -29,7 +31,11 @@ public:
 
 private:
 
+	UPhysicsHandleComponent *PhysicsHandle = nullptr;
+
 	float reach = 100.f;
-		
 	
+	UInputComponent *InputComponent = nullptr;
+	
+	void Grab();
 };
