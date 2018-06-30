@@ -33,9 +33,11 @@ private:
 
 	UPhysicsHandleComponent *PhysicsHandle = nullptr;
 
-	float reach = 100.f;
+	float reach;
 	
+	//input events
 	UInputComponent *InputComponent = nullptr;
-	
 	void Grab();
+	void Release();
+
 };
