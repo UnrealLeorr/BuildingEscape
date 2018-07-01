@@ -7,7 +7,6 @@ UOpenDoor::UOpenDoor(){
 // Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 // off to improve performance if you don't need them.
 PrimaryComponentTick.bCanEverTick = true;
-OpenTime = 0.3f;
 // ...
 }
 
@@ -19,25 +18,14 @@ void UOpenDoor::BeginPlay()
 	// ...
 }
 
-void UOpenDoor::OpenDoor()
-{
-	OnOpenRequest.Broadcast();
-}
-
-void UOpenDoor::CloseDoor()
-{
-	OnCloseRequest.Broadcast();
-}
-
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if(GetTotalMassOnPlate() >= 20.f) {
-		OpenDoor();
-	}
-	if (GetWorld()->GetRealTimeSeconds() >= LastOpenTime + OpenTime && GetTotalMassOnPlate() < 20.f) {
-		CloseDoor();
+		OnOpenRequest.Broadcast();
+	}else {
+		OnCloseRequest.Broadcast();
 	}
 	// ...
 }

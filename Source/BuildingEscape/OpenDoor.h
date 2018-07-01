@@ -26,10 +26,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void OpenDoor();
-	void CloseDoor();
-
-
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -40,11 +36,8 @@ public:
 private:
 	
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate = nullptr;
-
-	UPROPERTY(EditAnywhere)
-		float OpenTime;
+		ATriggerVolume* PressurePlate = nullptr;
 
 	float GetTotalMassOnPlate();
-	float LastOpenTime;
+
 };
