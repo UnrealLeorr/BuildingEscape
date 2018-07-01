@@ -37,7 +37,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 void UGrabber::FindPhysicsHandleComponent()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (!PhysicsHandle) {//if PhysicsHandle is not nullptr anymore
+	if (!PhysicsHandle) {//if PhysicsHandle still nullptr
 
 		UE_LOG(LogTemp, Error, TEXT("Physics Handler not Found from:%s"),
 			*(GetOwner()->GetName())

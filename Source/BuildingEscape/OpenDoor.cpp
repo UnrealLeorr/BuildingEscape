@@ -1,15 +1,14 @@
 // anyone can use this trash
 
 #include "OpenDoor.h"
-
+#define OUT
 // Sets default values for this component's properties
-UOpenDoor::UOpenDoor()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-	OpenTime = 0.3f;
-	// ...
+UOpenDoor::UOpenDoor(){
+// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+// off to improve performance if you don't need them.
+PrimaryComponentTick.bCanEverTick = true;
+OpenTime = 0.3f;
+// ...
 }
 
 
@@ -18,7 +17,6 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	Opener = GetWorld()->GetFirstPlayerController()->GetPawn(); // at the begining of play Opener becomes the first controlable pawn
 }
 
 void UOpenDoor::OpenDoor()
@@ -39,13 +37,26 @@ void UOpenDoor::CloseDoor()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (PressurePlate->IsOverlappingActor(Opener)) {
+	if(GetTotalMassOnPlate() >= 20.f) {
 		OpenDoor();
-		LastOpenTime = GetWorld()->GetTimeSeconds();
 	}
-	if (GetWorld()->GetRealTimeSeconds() >= LastOpenTime + OpenTime) {
+	if (GetWorld()->GetRealTimeSeconds() >= LastOpenTime + OpenTime && GetTotalMassOnPlate() < 20.f) {
 		CloseDoor();
 	}
 	// ...
+}
+
+float UOpenDoor::GetTotalMassOnPlate(){
+	float TotalMass = 0.f;
+	//find the overlaping actors in the pressure plate
+	TArray<AActor*>Overlappers;
+	PressurePlate->GetOverlappingActors(
+		OUT Overlappers
+	);//this should fill the array with the pointer to te actors
+	//add their masses to total mass
+	for (const auto &Iterator : Overlappers) {
+		TotalMass += Iterator->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
+	return TotalMass;
 }
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
+#include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "OpenDoor.generated.h"
@@ -41,7 +42,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		float OpenTime;
-		
+	float GetTotalMassOnPlate();
 	float LastOpenTime;
-	AActor* Opener; //pawn inhrerits actor
 };
