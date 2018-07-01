@@ -23,6 +23,7 @@ void UOpenDoor::OpenDoor()
 {
 	AActor *Owner = GetOwner();
 	FRotator NewRotation = FRotator(0, -180, 0);
+	if (!Owner) { return; }
 	Owner->SetActorRotation(NewRotation);
 }
 
@@ -30,6 +31,7 @@ void UOpenDoor::CloseDoor()
 {
 	AActor *Owner = GetOwner();
 	FRotator NewRotation = FRotator(0, -90, 0);
+	if (!Owner) { return; }
 	Owner->SetActorRotation(NewRotation);
 }
 
@@ -50,6 +52,12 @@ float UOpenDoor::GetTotalMassOnPlate(){
 	float TotalMass = 0.f;
 	//find the overlaping actors in the pressure plate
 	TArray<AActor*>Overlappers;
+	if (!PressurePlate) { 
+		UE_LOG(LogTemp, Error, TEXT("Pressure Plate not Found from:%s"),
+			*(GetOwner()->GetName())
+		)
+		return 0; 
+	}
 	PressurePlate->GetOverlappingActors(
 		OUT Overlappers
 	);//this should fill the array with the pointer to te actors

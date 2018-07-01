@@ -27,6 +27,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// if we push the grab key, LINE TRACE and see if it reaches a physics body, if it does move it
+	if (!PhysicsHandle) { return; }
 	if (PhysicsHandle->GrabbedComponent) {
 		PhysicsHandle->SetTargetLocation(GetReachLineEnd());
 	}
@@ -64,6 +65,7 @@ void UGrabber::Grab() {
 	auto ActorHit = HitResult.GetActor();
 	//atach physics handle if we reach something
 	if (ActorHit) {
+		if (!PhysicsHandle) { return; }
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
 			NAME_None,
@@ -73,6 +75,7 @@ void UGrabber::Grab() {
 	}
 }
 void UGrabber::Release() {
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 	//release physics handle
 }
