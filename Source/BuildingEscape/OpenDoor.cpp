@@ -21,18 +21,12 @@ void UOpenDoor::BeginPlay()
 
 void UOpenDoor::OpenDoor()
 {
-	AActor *Owner = GetOwner();
-	FRotator NewRotation = FRotator(0, -180, 0);
-	if (!Owner) { return; }
-	Owner->SetActorRotation(NewRotation);
+	OnOpenRequest.Broadcast();
 }
 
 void UOpenDoor::CloseDoor()
 {
-	AActor *Owner = GetOwner();
-	FRotator NewRotation = FRotator(0, -90, 0);
-	if (!Owner) { return; }
-	Owner->SetActorRotation(NewRotation);
+	OnCloseRequest.Broadcast();
 }
 
 // Called every frame
